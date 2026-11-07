@@ -54,3 +54,31 @@ Other scripts:
 - SQL queries: `server/utils/dataspotQueries.ts`
 - Dataspot base URL and database: `shared/dataspot.ts`
 - German UI texts: `i18n/locales/de.json`
+
+## Todos
+
+### Deploy
+
+Add a production Docker image and CI so others can run the app without `bun run dev`.
+
+- Add a multi-stage `Dockerfile` in the style of other DCC-BS Nuxt apps (e.g. `datenkatalog-dashboard`): build with Bun, run `node server/index.mjs` from `.output`.
+- Wire GitHub Actions via the shared DCC-BS `ci-workflows` (and optionally a `mise.toml` for tool versions).
+- Pass the existing `DATASPOT_*` variables as runtime secrets/env in the host; do not bake them into the image.
+- Decide `baseURL` / port with whoever hosts it (this app currently assumes `/` on port 3000).
+
+### Real Feedback button
+
+[`app/components/FeedbackButton.vue`](app/components/FeedbackButton.vue) currently only shows the toast "Noch nicht implementiert!".
+
+- Create the feedback GitHub repo `opendatabs/Feedback_datenkatalog-freigabe` (name was agreed during planning; confirm if the org should instead be `DCC-BS` like `Feedback_datenkatalog-dashboard`).
+- Extend the DCC-BS layer `github:DCC-BS/nuxt-layers/feedback-control` and replace the stub button with that layer's feedback control (same pattern as `datenkatalog-dashboard`).
+- Add the layer's runtime config (`repo`, `repoOwner`, `project`, `githubToken` / `FEEDBACK_GITHUB_TOKEN`, `label`) and document the token in `.env.example` without copying real secrets.
+
+### Website login (Azure Entra)
+
+The Dataspot credentials are M2M only. Anyone who can reach the site can call `/api/persons` and `/api/working-datasets` today.
+
+- Extend `github:DCC-BS/nuxt-layers/auth` with `AUTH_LAYER_URI=github:DCC-BS/nuxt-layers/azure-auth` (the logger layer is usually required alongside auth layers).
+- Add the `NUXT_AZURE_AUTH_*` variables to `.env.example` and protect pages via the layer middleware.
+- In `server/api/persons.get.ts` and `server/api/working-datasets.get.ts`, return 401 when `getUserSession(event)` is null so the Dataspot routes are not callable anonymously.
+- Keep Dataspot M2M auth (`server/utils/dataspotAuth.ts`) separate from user login.
