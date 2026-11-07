@@ -1,0 +1,45 @@
+{
+    "navigation": {
+        "app": "Datenkatalog Freigabe"
+    },
+    "feedback": {
+        "button": "Feedback",
+        "notImplemented": "Noch nicht implementiert!"
+    },
+    "errors": {
+        "occurred": "Ein Fehler ist aufgetreten.",
+        "code": "Fehlercode: {code}"
+    },
+    "page": {
+        "title": "Metadaten zur Prüfung versenden",
+        "intro": "Wähle einen Data Steward und die Datensätze im Status WORKING, für die eine Prüfung angefragt werden soll."
+    },
+    "steward": {
+        "label": "Data Steward",
+        "placeholder": "Data Steward auswählen",
+        "searchPlaceholder": "Suchen...",
+        "loading": "Data Stewards werden geladen...",
+        "loadingDatasets": "Datensätze werden geladen...",
+        "noDatasets": "Keine Datensätze im Status WORKING"
+    },
+    "selection": {
+        "label": "Auswahl",
+        "datasets": "Datensätze",
+        "collections": "Sammlungen",
+        "selectAll": "Alle auswählen",
+        "selectNone": "Keine auswählen",
+        "datasetCount": "{count} Datensätze"
+    },
+    "email": {
+        "label": "E-Mail",
+        "recipient": "Empfänger",
+        "subject": "Betreff",
+        "body": "Text",
+        "copySubject": "Betreff kopieren",
+        "copyBody": "Text kopieren",
+        "openMail": "Im Mailprogramm öffnen",
+        "copied": "In die Zwischenablage kopiert",
+        "mailtoHint": "Manche Mailprogramme kürzen sehr lange Links. Bei vielen Datensätzen besser den Text kopieren.",
+        "editHint": "Betreff und Text können bearbeitet werden. Eine Änderung der Auswahl erzeugt den Text neu."
+    }
+}

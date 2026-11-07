@@ -1,0 +1,38 @@
+{
+    "name": "datenkatalog-freigabe",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "nuxt dev",
+        "build": "nuxt build",
+        "start": "node .output/server/index.mjs",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "tsc": "vue-tsc --noEmit -p tsconfig.json",
+        "lint": "biome format --write",
+        "check": "biome check --fix"
+    },
+    "dependencies": {
+        "@dcc-bs/common-ui.bs.js": "^2.2.3",
+        "@iconify-json/lucide": "^1.2.85",
+        "@nuxt/ui": "^4.12.0",
+        "@nuxtjs/i18n": "^10.2.1",
+        "consola": "^3.4.2",
+        "motion-v": "^2.0.1",
+        "nuxt": "^4.2.2",
+        "tailwindcss": "^4.1.18",
+        "vue": "^3.5.44",
+        "vue-router": "^5.2.0",
+        "zod": "^4.4.3"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.5.15",
+        "@types/node": "^26.6.6",
+        "typescript": "^5.9.3",
+        "vue-tsc": "^3.2.2"
+    },
+    "trustedDependencies": [
+        "@parcel/watcher"
+    ]
+}
