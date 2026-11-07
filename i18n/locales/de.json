@@ -12,7 +12,11 @@
     },
     "page": {
         "title": "Metadaten zur Prüfung versenden",
-        "intro": "Wähle einen Data Steward und die Datensätze im Status WORKING, für die eine Prüfung angefragt werden soll."
+        "intro": "Wähle einen Data Steward, den Posten und die Datensätze im Status WORKING, für die eine Prüfung angefragt werden soll."
+    },
+    "post": {
+        "label": "Posten",
+        "placeholder": "Posten auswählen"
     },
     "steward": {
         "label": "Data Steward",

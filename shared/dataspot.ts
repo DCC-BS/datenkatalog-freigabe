@@ -15,6 +15,8 @@ export interface Person {
 }
 
 export interface WorkingDataset {
+    postId: string;
+    postLabel: string;
     datasetId: string;
     datasetLabel: string;
     collectionId: string;
