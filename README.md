@@ -40,13 +40,36 @@ bun install
 bun run dev
 ```
 
-The app runs on <http://localhost:3000>.
+The app runs on <http://localhost:3000/datenkatalog-freigabe/>.
 
 Other scripts:
 
 - `bun run check` – lint and fix with Biome
 - `bun run tsc` – type checking
 - `bun run build` – production build
+
+## Running with Docker
+
+The `Dockerfile` builds the app and serves it with the Nitro production server on
+port `8033`. Pass the `DATASPOT_*` variables at runtime (e.g. via `--env-file`);
+do not bake them into the image.
+
+Build the image:
+
+```bash
+docker build -t datenkatalog-freigabe .
+```
+
+Run the container, passing your environment variables and mapping the port:
+
+```bash
+docker run --rm -p 8033:8033 --env-file .env datenkatalog-freigabe
+```
+
+The app is then available at <http://localhost:8033/datenkatalog-freigabe/>.
+
+> The same image is built and pushed to GitHub Container Registry by the
+> `.github/workflows/docker.yml` workflow on pushes to `main` and on tags.
 
 ## Where to change things
 
@@ -56,15 +79,6 @@ Other scripts:
 - German UI texts: `i18n/locales/de.json`
 
 ## Todos
-
-### Deploy
-
-Add a production Docker image and CI so others can run the app without `bun run dev`.
-
-- Add a multi-stage `Dockerfile` in the style of other DCC-BS Nuxt apps (e.g. `datenkatalog-dashboard`): build with Bun, run `node server/index.mjs` from `.output`.
-- Wire GitHub Actions via the shared DCC-BS `ci-workflows` (and optionally a `mise.toml` for tool versions).
-- Pass the existing `DATASPOT_*` variables as runtime secrets/env in the host; do not bake them into the image.
-- Decide `baseURL` / port with whoever hosts it (this app currently assumes `/` on port 3000).
 
 ### Real Feedback button
 
