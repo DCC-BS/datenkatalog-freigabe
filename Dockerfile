@@ -6,6 +6,8 @@ RUN apk add --no-cache git ca-certificates && update-ca-certificates
 RUN npm install -g bun@1.4.4
 WORKDIR /app
 ENV NODE_OPTIONS=--max-old-space-size=8192
+ARG AUTH_LAYER_URI
+ARG LOGGER_LAYER_URI
 
 COPY package.json bun.lock ./
 RUN bun install --ci

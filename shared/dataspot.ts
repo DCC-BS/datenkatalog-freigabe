@@ -26,4 +26,5 @@ export interface WorkingDataset {
 export type DataspotErrorCode =
     | "DATASPOT_AUTH_FAILED"
     | "DATASPOT_TIMEOUT"
-    | "DATASPOT_QUERY_FAILED";
+    | "DATASPOT_QUERY_FAILED"
+    | "FORBIDDEN_PERSON";

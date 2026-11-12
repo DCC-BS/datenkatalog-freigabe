@@ -43,3 +43,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            AUTH_LAYER_URI=github:DCC-BS/nuxt-layers/azure-auth
+            LOGGER_LAYER_URI=github:DCC-BS/nuxt-layers/pino-logger

@@ -21,6 +21,7 @@
         "consola": "^3.4.2",
         "motion-v": "^2.0.1",
         "nuxt": "^4.2.2",
+        "pino": "^10.4.0",
         "tailwindcss": "^4.1.18",
         "vue": "^3.5.44",
         "vue-router": "^5.2.0",
@@ -29,6 +30,7 @@
     "devDependencies": {
         "@biomejs/biome": "2.5.15",
         "@types/node": "^26.6.6",
+        "pino-pretty": "^13.2.0",
         "typescript": "^5.9.3",
         "vue-tsc": "^3.2.2"
     },

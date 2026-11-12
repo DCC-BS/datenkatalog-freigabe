@@ -1,6 +1,8 @@
 {
     "navigation": {
-        "app": "Datenkatalog Freigabe"
+        "app": "Datenkatalog Freigabe",
+        "settings": "Einstellungen",
+        "signOut": "Abmelden"
     },
     "feedback": {
         "button": "Feedback",

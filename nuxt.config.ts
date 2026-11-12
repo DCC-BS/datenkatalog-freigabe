@@ -2,6 +2,10 @@
 export default defineNuxtConfig({
     compatibilityDate: "2024-11-01",
     devtools: { enabled: true },
+    extends: [
+        ["github:DCC-BS/nuxt-layers/logger", { install: true }],
+        ["github:DCC-BS/nuxt-layers/auth", { install: true }],
+    ],
     app: {
         baseURL: "/",
         head: {

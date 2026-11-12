@@ -35,6 +35,11 @@ const personItems = computed(() =>
 );
 
 const selectedPersonItem = ref<(typeof personItems.value)[number]>();
+
+watch(personItems, (items) => {
+    if (items.length === 1) selectedPersonItem.value = items[0];
+});
+
 const selectedPerson = computed(() => selectedPersonItem.value?.person);
 
 const datasets = ref<WorkingDataset[]>([]);

@@ -24,14 +24,37 @@ All configuration is read from `.env` (see `.env.example`):
 
 | Variable | Description |
 | --- | --- |
+| `AUTH_LAYER_URI` | Auth layer implementation, `github:DCC-BS/nuxt-layers/azure-auth` (build time) |
+| `LOGGER_LAYER_URI` | Logger layer implementation, `github:DCC-BS/nuxt-layers/pino-logger` (build time) |
+| `NUXT_AZURE_AUTH_TENANT_ID` | Entra ID tenant of the website app registration |
+| `NUXT_AZURE_AUTH_CLIENT_ID` | Client ID of the website app registration |
+| `NUXT_AZURE_AUTH_CLIENT_SECRET` | Client secret of the website app registration |
+| `NUXT_AZURE_AUTH_API_CLIENT_ID` | Leave empty (only used for a separate backend API) |
+| `NUXT_AZURE_AUTH_SECRET` | Session encryption secret, at least 32 characters |
+| `NUXT_AZURE_AUTH_ORIGIN` | `<app URL>/api/auth`, e.g. `https://freigabe.datenkatalog.bs.ch/api/auth` |
 | `DATASPOT_TENANT_ID` | Entra ID tenant of the Dataspot service app registration |
 | `DATASPOT_CLIENT_ID` | Client ID of the service app registration |
 | `DATASPOT_CLIENT_SECRET` | Client secret of the service app registration |
 | `DATASPOT_EXPOSED_CLIENT_ID` | Client ID of the Dataspot API exposed in Entra ID (scope `api://<id>/.default`) |
 | `DATASPOT_SERVICE_USER_ACCESS_KEY` | Access key of the Dataspot service user |
 
-These variables provide a service-to-service (M2M) token for Dataspot. They are **not** a login for app users;
-the website itself currently has no login.
+The `DATASPOT_*` variables provide a service-to-service (M2M) token for Dataspot. They are **not** a login for app users.
+
+## Login and roles
+
+Users sign in with Azure Entra via the DCC-BS [`azure-auth`](https://dcc-bs.github.io/documentation/nuxt-layers/auth.html) layer.
+All pages and the API routes `/api/persons` and `/api/working-datasets` require a login (401 otherwise).
+"Abmelden" in the settings menu of the navigation bar signs out.
+
+Roles are Entra app roles of the website app registration (`roles` claim of the ID token):
+
+| Role | Access |
+| --- | --- |
+| `dcc` | Can select any Data Steward |
+| `user` (or no role) | Only sees themselves as Data Steward, matched by Entra email = Dataspot `login_id` |
+
+The Entra app registration needs the redirect URI `<NUXT_AZURE_AUTH_ORIGIN>/callback/azure-ad`
+(e.g. `https://freigabe.datenkatalog.bs.ch/api/auth/callback/azure-ad`). Role changes take effect at the next sign-in.
 
 ## Development
 
@@ -51,13 +74,16 @@ Other scripts:
 ## Running with Docker
 
 The `Dockerfile` builds the app and serves it with the Nitro production server on
-port `8033`. Pass the `DATASPOT_*` variables at runtime (e.g. via `--env-file`);
-do not bake them into the image.
+port `8033`. The layer URIs are build arguments; pass the `NUXT_AZURE_AUTH_*` and
+`DATASPOT_*` variables at runtime (e.g. via `--env-file`); do not bake them into the image.
 
 Build the image:
 
 ```bash
-docker build -t datenkatalog-freigabe .
+docker build \
+  --build-arg AUTH_LAYER_URI=github:DCC-BS/nuxt-layers/azure-auth \
+  --build-arg LOGGER_LAYER_URI=github:DCC-BS/nuxt-layers/pino-logger \
+  -t datenkatalog-freigabe .
 ```
 
 Run the container, passing your environment variables and mapping the port:
@@ -87,12 +113,3 @@ The app is then available at <http://localhost:8033/>.
 - Create the feedback GitHub repo `opendatabs/Feedback_datenkatalog-freigabe` (name was agreed during planning; confirm if the org should instead be `DCC-BS` like `Feedback_datenkatalog-dashboard`).
 - Extend the DCC-BS layer `github:DCC-BS/nuxt-layers/feedback-control` and replace the stub button with that layer's feedback control (same pattern as `datenkatalog-dashboard`).
 - Add the layer's runtime config (`repo`, `repoOwner`, `project`, `githubToken` / `FEEDBACK_GITHUB_TOKEN`, `label`) and document the token in `.env.example` without copying real secrets.
-
-### Website login (Azure Entra)
-
-The Dataspot credentials are M2M only. Anyone who can reach the site can call `/api/persons` and `/api/working-datasets` today.
-
-- Extend `github:DCC-BS/nuxt-layers/auth` with `AUTH_LAYER_URI=github:DCC-BS/nuxt-layers/azure-auth` (the logger layer is usually required alongside auth layers).
-- Add the `NUXT_AZURE_AUTH_*` variables to `.env.example` and protect pages via the layer middleware.
-- In `server/api/persons.get.ts` and `server/api/working-datasets.get.ts`, return 401 when `getUserSession(event)` is null so the Dataspot routes are not callable anonymously.
-- Keep Dataspot M2M auth (`server/utils/dataspotAuth.ts`) separate from user login.

@@ -20,6 +20,13 @@ WHERE r.label = '${DATA_STEWARD_ROLE_LABEL}'
 ORDER BY pe.family_name, pe.given_name
 `;
 
+export const PERSON_LOGINS_QUERY = `
+SELECT u.login_id AS email
+FROM user_view u
+WHERE u.is_person = '{person_id}'
+  AND u.login_id IS NOT NULL
+`;
+
 export const WORKING_DATASETS_QUERY = `
 WITH person_agent AS (
     SELECT hp.holds_post AS agent_id, p.label AS post_label
