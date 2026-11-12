@@ -40,7 +40,7 @@ bun install
 bun run dev
 ```
 
-The app runs on <http://localhost:3000/datenkatalog-freigabe/>.
+The app runs on <http://localhost:3000/>.
 
 Other scripts:
 
@@ -66,7 +66,7 @@ Run the container, passing your environment variables and mapping the port:
 docker run --rm -p 8033:8033 --env-file .env datenkatalog-freigabe
 ```
 
-The app is then available at <http://localhost:8033/datenkatalog-freigabe/>.
+The app is then available at <http://localhost:8033/>.
 
 > The same image is built and pushed to GitHub Container Registry by the
 > `.github/workflows/docker.yml` workflow on pushes to `main` and on tags.
