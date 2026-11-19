@@ -47,5 +47,11 @@
         "copied": "In die Zwischenablage kopiert",
         "mailtoHint": "Manche Mailprogramme kürzen sehr lange Links. Bei vielen Datensätzen besser den Text kopieren.",
         "editHint": "Betreff und Text können bearbeitet werden. Eine Änderung der Auswahl erzeugt den Text neu."
+    },
+    "pdf": {
+        "label": "Freigabe-PDF",
+        "hint": "Formular zur Unterschrift durch den Data Steward. Die ausgewählten Datenprodukte sind mit dem Datenkatalog verlinkt.",
+        "download": "PDF herunterladen",
+        "failed": "PDF konnte nicht erstellt werden."
     }
 }

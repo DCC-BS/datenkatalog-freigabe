@@ -219,6 +219,14 @@ watch(
                     :recipient="selectedPerson.email"
                     :disabled="selectedAssets.length === 0"
                 />
+
+                <USeparator />
+
+                <FreigabePdfBlock
+                    :family-name="selectedPerson.familyName"
+                    :asset-type="mode"
+                    :assets="selectedAssets"
+                />
             </template>
         </template>
     </div>

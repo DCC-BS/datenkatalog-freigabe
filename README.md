@@ -100,6 +100,8 @@ The app is then available at <http://localhost:8033/>.
 ## Where to change things
 
 - Email text: `app/utils/reviewRequestEmail.ts` (template at the top of the file)
+- Freigabe PDF text: `app/utils/freigabePdf.ts`
+- Freigabe PDF logos: `public/freigabe/`
 - SQL queries: `server/utils/dataspotQueries.ts`
 - Dataspot base URL and database: `shared/dataspot.ts`
 - German UI texts: `i18n/locales/de.json`
