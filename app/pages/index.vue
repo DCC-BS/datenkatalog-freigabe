@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Person, WorkingDataset } from "#shared/dataspot";
+import type { Dataset, Person } from "#shared/dataspot";
 import type { SelectableAsset } from "~/types/selectableAsset";
 
 type SelectionMode = "datasets" | "collections";
@@ -42,7 +42,7 @@ watch(personItems, (items) => {
 
 const selectedPerson = computed(() => selectedPersonItem.value?.person);
 
-const datasets = ref<WorkingDataset[]>([]);
+const datasets = ref<Dataset[]>([]);
 const datasetsLoading = ref(false);
 let latestRequestId = 0;
 
@@ -53,7 +53,7 @@ watch(selectedPerson, async (person) => {
     const requestId = ++latestRequestId;
     datasetsLoading.value = true;
     try {
-        const result = await $fetch<WorkingDataset[]>("/api/working-datasets", {
+        const result = await $fetch<Dataset[]>("/api/datasets", {
             query: { personId: person.id },
         });
         if (requestId === latestRequestId) datasets.value = result;

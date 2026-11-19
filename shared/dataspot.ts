@@ -14,7 +14,7 @@ export interface Person {
     email: string;
 }
 
-export interface WorkingDataset {
+export interface Dataset {
     postId: string;
     postLabel: string;
     datasetId: string;

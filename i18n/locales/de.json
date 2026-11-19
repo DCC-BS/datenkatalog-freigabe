@@ -14,7 +14,7 @@
     },
     "page": {
         "title": "Metadaten zur Prüfung versenden",
-        "intro": "Wähle einen Data Steward, den Posten und die Datensätze im Status Entwurf, für die eine Prüfung angefragt werden soll."
+        "intro": "Wähle einen Data Steward, den Posten und die noch nicht veröffentlichten Datensätze, für die eine Prüfung angefragt werden soll."
     },
     "post": {
         "label": "Posten",
@@ -26,7 +26,7 @@
         "searchPlaceholder": "Suchen...",
         "loading": "Data Stewards werden geladen...",
         "loadingDatasets": "Datensätze werden geladen...",
-        "noDatasets": "Keine Datensätze im Status Entwurf"
+        "noDatasets": "Keine unveröffentlichten Datensätze"
     },
     "selection": {
         "label": "Auswahl",

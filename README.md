@@ -6,7 +6,7 @@ It prepares the review-request email that is sent to a Data Steward before their
 Workflow:
 
 1. Select a Data Steward (people holding a post with the role `Data Steward`).
-2. The tool loads all datasets in status `WORKING` they are responsible for as Data Steward.
+2. The tool loads all datasets with public state `DRAFT` they are responsible for as Data Steward.
 3. Select datasets, or the collections that contain them.
 4. Edit the generated (German) email and copy it, or open it in your mail program.
 
@@ -43,7 +43,7 @@ The `DATASPOT_*` variables provide a service-to-service (M2M) token for Dataspot
 ## Login and roles
 
 Users sign in with Azure Entra via the DCC-BS [`azure-auth`](https://dcc-bs.github.io/documentation/nuxt-layers/auth.html) layer.
-All pages and the API routes `/api/persons` and `/api/working-datasets` require a login (401 otherwise).
+All pages and the API routes `/api/persons` and `/api/datasets` require a login (401 otherwise).
 "Abmelden" in the settings menu of the navigation bar signs out.
 
 Roles are Entra app roles of the website app registration (`roles` claim of the ID token):

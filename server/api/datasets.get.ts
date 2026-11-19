@@ -1,7 +1,7 @@
 import { consola } from "consola";
-import type { WorkingDataset } from "#shared/dataspot";
+import type { Dataset } from "#shared/dataspot";
 
-export default defineEventHandler(async (event): Promise<WorkingDataset[]> => {
+export default defineEventHandler(async (event): Promise<Dataset[]> => {
     const session = await requireUserSession(event);
     const { personId } = getQuery(event);
     if (!isUuid(personId)) {
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event): Promise<WorkingDataset[]> => {
         );
         if (!isOwnPerson) {
             consola.warn(
-                `Denied working datasets of person ${personId} to ${session.email}`,
+                `Denied datasets of person ${personId} to ${session.email}`,
             );
             throw createError({
                 statusCode: 403,
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event): Promise<WorkingDataset[]> => {
         }
     }
 
-    const rows = await executeQuery(WORKING_DATASETS_QUERY, {
+    const rows = await executeQuery(DATASETS_QUERY, {
         person_id: personId,
     });
     const datasets = rows.map((row) => ({
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event): Promise<WorkingDataset[]> => {
         collectionLabel: String(row.collection_label),
     }));
     consola.info(
-        `Loaded ${datasets.length} working dataset rows for person ${personId}`,
+        `Loaded ${datasets.length} dataset rows for person ${personId}`,
     );
     return datasets;
 });

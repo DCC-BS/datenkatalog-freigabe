@@ -15,7 +15,7 @@ JOIN dataset_view d ON d.id = a.id
 JOIN role_view ar ON ar.id = a.attributed_as
 WHERE r.label = '${DATA_STEWARD_ROLE_LABEL}'
   AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
-  AND d.status = 'WORKING'
+  AND d.public_state = 'DRAFT'
   AND u.login_id IS NOT NULL
 ORDER BY pe.family_name, pe.given_name
 `;
@@ -27,7 +27,7 @@ WHERE u.is_person = '{person_id}'
   AND u.login_id IS NOT NULL
 `;
 
-export const WORKING_DATASETS_QUERY = `
+export const DATASETS_QUERY = `
 WITH person_agent AS (
     SELECT hp.holds_post AS agent_id, p.label AS post_label
     FROM holdspost_view hp
@@ -48,7 +48,7 @@ JOIN person_agent pa ON pa.agent_id = a.attributed_to
 JOIN dataset_view d ON d.id = a.id
 JOIN collection_view c ON c.id = d.in_collection
 JOIN role_view ar ON ar.id = a.attributed_as
-WHERE d.status = 'WORKING'
+WHERE d.public_state = 'DRAFT'
   AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
 ORDER BY pa.post_label, c.label, d.label
 `;
