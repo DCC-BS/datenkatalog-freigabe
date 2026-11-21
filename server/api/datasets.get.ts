@@ -1,5 +1,5 @@
 import { consola } from "consola";
-import type { Dataset } from "#shared/dataspot";
+import type { DataOwner, Dataset } from "#shared/dataspot";
 
 export default defineEventHandler(async (event): Promise<Dataset[]> => {
     const session = await requireUserSession(event);
@@ -31,9 +31,22 @@ export default defineEventHandler(async (event): Promise<Dataset[]> => {
         }
     }
 
-    const rows = await executeQuery(DATASETS_QUERY, {
-        person_id: personId,
-    });
+    const [rows, ownerRows] = await Promise.all([
+        executeQuery(DATASETS_QUERY, { person_id: personId }),
+        executeQuery(DATA_OWNERS_QUERY, { person_id: personId }),
+    ]);
+
+    const ownersByDataset = new Map<string, DataOwner[]>();
+    for (const row of ownerRows) {
+        const datasetId = String(row.dataset_id);
+        const owners = ownersByDataset.get(datasetId) ?? [];
+        owners.push({
+            givenName: String(row.given_name),
+            familyName: String(row.family_name),
+        });
+        ownersByDataset.set(datasetId, owners);
+    }
+
     const datasets = rows.map((row) => ({
         postId: String(row.post_id),
         postLabel: String(row.post_label),
@@ -41,9 +54,10 @@ export default defineEventHandler(async (event): Promise<Dataset[]> => {
         datasetLabel: String(row.dataset_label),
         collectionId: String(row.collection_id),
         collectionLabel: String(row.collection_label),
+        dataOwners: ownersByDataset.get(String(row.dataset_id)) ?? [],
     }));
     consola.info(
-        `Loaded ${datasets.length} dataset rows for person ${personId}`,
+        `Loaded ${datasets.length} dataset rows and ${ownerRows.length} data owner rows for person ${personId}`,
     );
     return datasets;
 });

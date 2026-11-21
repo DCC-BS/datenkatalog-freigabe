@@ -2,6 +2,7 @@
 // only after UUID validation, because the Query API has no parameter binding.
 
 export const DATA_STEWARD_ROLE_LABEL = "Data Steward";
+export const DATA_OWNER_ROLE_LABEL = "Data Owner";
 
 export const PERSONS_QUERY = `
 SELECT DISTINCT pe.id, pe.given_name, pe.family_name, u.login_id AS email
@@ -51,4 +52,30 @@ JOIN role_view ar ON ar.id = a.attributed_as
 WHERE d.public_state = 'DRAFT'
   AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
 ORDER BY pa.post_label, c.label, d.label
+`;
+
+export const DATA_OWNERS_QUERY = `
+WITH steward_dataset AS (
+    SELECT DISTINCT d.id AS dataset_id
+    FROM holdspost_view hp
+    JOIN post_view p ON p.id = hp.holds_post
+    JOIN role_view r ON r.id = p.has_role
+    JOIN attributedasset_view a ON a.attributed_to = p.id
+    JOIN dataset_view d ON d.id = a.id
+    JOIN role_view ar ON ar.id = a.attributed_as
+    WHERE hp.resource_id = '{person_id}'
+      AND r.label = '${DATA_STEWARD_ROLE_LABEL}'
+      AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
+      AND d.public_state = 'DRAFT'
+)
+SELECT DISTINCT
+    sd.dataset_id,
+    pe.given_name,
+    pe.family_name
+FROM steward_dataset sd
+JOIN attributedasset_view a ON a.id = sd.dataset_id
+JOIN role_view ar ON ar.id = a.attributed_as
+JOIN holdspost_view hp ON hp.holds_post = a.attributed_to
+JOIN person_view pe ON pe.id = hp.resource_id
+WHERE ar.label = '${DATA_OWNER_ROLE_LABEL}'
 `;

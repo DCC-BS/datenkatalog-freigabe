@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Dataset, Person } from "#shared/dataspot";
+import type { DataOwner, Dataset, Person } from "#shared/dataspot";
 import type { SelectableAsset } from "~/types/selectableAsset";
 
 type SelectionMode = "datasets" | "collections";
@@ -139,11 +139,32 @@ const selectedAssets = computed(() =>
     selectableItems.value.filter((item) => selectedIds.value.includes(item.id)),
 );
 
+const selectedDataOwners = computed<DataOwner[]>(() => {
+    const selectedDatasets = postDatasets.value.filter((dataset) =>
+        selectedIds.value.includes(
+            mode.value === "datasets"
+                ? dataset.datasetId
+                : dataset.collectionId,
+        ),
+    );
+    const owners = new Map<string, DataOwner>();
+    for (const dataset of selectedDatasets) {
+        for (const owner of dataset.dataOwners) {
+            owners.set(`${owner.givenName} ${owner.familyName}`, owner);
+        }
+    }
+    return [...owners.values()].sort(
+        (a, b) =>
+            a.familyName.localeCompare(b.familyName) ||
+            a.givenName.localeCompare(b.givenName),
+    );
+});
+
 const subject = ref("");
 const body = ref("");
 
 watch(
-    [selectedPerson, mode, selectedAssets, senderGivenName],
+    [selectedPerson, mode, selectedAssets, selectedDataOwners, senderGivenName],
     () => {
         if (!selectedPerson.value) return;
         const email = buildReviewRequestEmail(
@@ -152,6 +173,7 @@ watch(
             mode.value,
             selectedAssets.value,
             runtimeConfig.public.weisungSchutzmassnahmenUrl,
+            selectedDataOwners.value,
         );
         subject.value = email.subject;
         body.value = email.body;

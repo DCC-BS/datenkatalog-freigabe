@@ -14,6 +14,11 @@ export interface Person {
     email: string;
 }
 
+export interface DataOwner {
+    givenName: string;
+    familyName: string;
+}
+
 export interface Dataset {
     postId: string;
     postLabel: string;
@@ -21,6 +26,7 @@ export interface Dataset {
     datasetLabel: string;
     collectionId: string;
     collectionLabel: string;
+    dataOwners: DataOwner[];
 }
 
 export type DataspotErrorCode =

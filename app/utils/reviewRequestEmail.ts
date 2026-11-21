@@ -1,4 +1,8 @@
-import { type CatalogAssetType, catalogUrl } from "#shared/dataspot";
+import {
+    type CatalogAssetType,
+    catalogUrl,
+    type DataOwner,
+} from "#shared/dataspot";
 
 export const REVIEW_REQUEST_SUBJECT =
     "Datenkatalog: Prüfung und Freigabe der Metadaten";
@@ -12,6 +16,8 @@ Könntest du bitte die Beschreibungen sowie die Angaben zu den Personendaten, de
 {assetList}
 
 Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vornehmen oder mir deine Änderungswünsche einfach mitteilen.
+
+{dataOwnerLine}
 
 Vielen Dank nochmals für deine Zeit und Unterstützung!
 
@@ -36,6 +42,7 @@ export function buildReviewRequestEmail(
     assetType: CatalogAssetType,
     assets: EmailAsset[],
     weisungUrl: string,
+    dataOwners: DataOwner[],
 ): ReviewRequestEmail {
     const assetList = assets
         .map(
@@ -53,8 +60,22 @@ export function buildReviewRequestEmail(
         body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName)
             .replace("{senderGivenName}", senderGivenName)
             .replace("{assetList}", assetList)
+            .replace("{dataOwnerLine}", buildDataOwnerLine(dataOwners))
             .replace("{weisungLine}", weisungLine),
     };
+}
+
+function buildDataOwnerLine(dataOwners: DataOwner[]): string {
+    if (dataOwners.length === 0) return "KEIN DATA OWNER GEFUNDEN";
+
+    const names = dataOwners.map(
+        (owner) => `${owner.givenName} ${owner.familyName}`,
+    );
+    const recipients =
+        names.length === 1
+            ? `dem Data Owner, ${names[0]},`
+            : `den Data Owners, ${names.slice(0, -1).join(", ")} und ${names.at(-1)},`;
+    return `Nach deiner Unterschrift würden wir die Mail ${recipients} zur Freigabe weiterleiten.`;
 }
 
 export function buildMailtoLink(
