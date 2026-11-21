@@ -36,7 +36,7 @@ export function buildReviewRequestEmail(
 ): ReviewRequestEmail {
     const assetList = assets
         .map(
-            (asset) => `*\t${asset.label} <${catalogUrl(assetType, asset.id)}>`,
+            (asset) => `-\t${asset.label} (${catalogUrl(assetType, asset.id)})`,
         )
         .join("\n");
 
