@@ -5,6 +5,7 @@ import type { SelectableAsset } from "~/types/selectableAsset";
 type SelectionMode = "datasets" | "collections";
 
 const { t } = useI18n();
+const runtimeConfig = useRuntimeConfig();
 const toast = useToast();
 const { data: authData } = useAppAuth();
 
@@ -150,6 +151,7 @@ watch(
             senderGivenName.value,
             mode.value,
             selectedAssets.value,
+            runtimeConfig.public.weisungSchutzmassnahmenUrl,
         );
         subject.value = email.subject;
         body.value = email.body;

@@ -15,6 +15,8 @@ Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vor
 
 Vielen Dank nochmals für deine Zeit und Unterstützung!
 
+{weisungLine}
+
 Liebe Grüsse
 {senderGivenName}`;
 
@@ -33,6 +35,7 @@ export function buildReviewRequestEmail(
     senderGivenName: string,
     assetType: CatalogAssetType,
     assets: EmailAsset[],
+    weisungUrl: string,
 ): ReviewRequestEmail {
     const assetList = assets
         .map(
@@ -40,11 +43,17 @@ export function buildReviewRequestEmail(
         )
         .join("\n");
 
+    const trimmedWeisungUrl = weisungUrl.trim();
+    const weisungLine = trimmedWeisungUrl
+        ? `Mehr Informationen zu Schutzbedarfsstufe (Kapitel 3) und Vertraulichkeit (Kapitel 3.1) gibt es hier: ${trimmedWeisungUrl}`
+        : "PLEASE SET NUXT_PUBLIC_WEISUNG_SCHUTZMASSNAHMEN_URL IN .ENV";
+
     return {
         subject: REVIEW_REQUEST_SUBJECT,
         body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName)
             .replace("{senderGivenName}", senderGivenName)
-            .replace("{assetList}", assetList),
+            .replace("{assetList}", assetList)
+            .replace("{weisungLine}", weisungLine),
     };
 }
 

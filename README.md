@@ -38,6 +38,7 @@ All configuration is read from `.env` (see `.env.example`):
 | `DATASPOT_EXPOSED_CLIENT_ID` | Client ID of the Dataspot API exposed in Entra ID (scope `api://<id>/.default`) |
 | `DATASPOT_SERVICE_USER_ACCESS_KEY` | Access key of the Dataspot service user |
 | `NUXT_FEEDBACK_GITHUB_TOKEN` | GitHub token used by the feedback feature |
+| `NUXT_PUBLIC_WEISUNG_SCHUTZMASSNAHMEN_URL` | SharePoint link to the Weisung Schutzmassnahmen Informationssicherheit, inserted into the review email |
 
 The `DATASPOT_*` variables provide a service-to-service (M2M) token for Dataspot. They are **not** a login for app users.
 

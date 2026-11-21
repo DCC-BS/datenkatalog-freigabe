@@ -15,6 +15,9 @@ export default defineNuxtConfig({
             githubToken: process.env.FEEDBACK_GITHUB_TOKEN || "",
             label: "Freigabe",
         },
+        public: {
+            weisungSchutzmassnahmenUrl: "",
+        },
     },
     app: {
         baseURL: "/",
