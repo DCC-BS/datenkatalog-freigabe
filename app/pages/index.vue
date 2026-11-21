@@ -6,6 +6,14 @@ type SelectionMode = "datasets" | "collections";
 
 const { t } = useI18n();
 const toast = useToast();
+const { data: authData } = useAppAuth();
+
+const senderGivenName = computed(() => {
+    const name = (authData.value?.user.name ?? "").trim();
+    const separatorIndex = name.indexOf(",");
+    if (separatorIndex === -1) return name;
+    return name.slice(separatorIndex + 1).trim();
+});
 
 function showError(error: unknown) {
     const data = (error as { data?: { data?: { code?: string } } }).data;
@@ -134,11 +142,12 @@ const subject = ref("");
 const body = ref("");
 
 watch(
-    [selectedPerson, mode, selectedAssets],
+    [selectedPerson, mode, selectedAssets, senderGivenName],
     () => {
         if (!selectedPerson.value) return;
         const email = buildReviewRequestEmail(
             selectedPerson.value.givenName,
+            senderGivenName.value,
             mode.value,
             selectedAssets.value,
         );

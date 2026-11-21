@@ -16,7 +16,7 @@ Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vor
 Vielen Dank nochmals für deine Zeit und Unterstützung!
 
 Liebe Grüsse
-Josephine`;
+{senderGivenName}`;
 
 export interface EmailAsset {
     id: string;
@@ -30,6 +30,7 @@ export interface ReviewRequestEmail {
 
 export function buildReviewRequestEmail(
     givenName: string,
+    senderGivenName: string,
     assetType: CatalogAssetType,
     assets: EmailAsset[],
 ): ReviewRequestEmail {
@@ -41,10 +42,9 @@ export function buildReviewRequestEmail(
 
     return {
         subject: REVIEW_REQUEST_SUBJECT,
-        body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName).replace(
-            "{assetList}",
-            assetList,
-        ),
+        body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName)
+            .replace("{senderGivenName}", senderGivenName)
+            .replace("{assetList}", assetList),
     };
 }
 
