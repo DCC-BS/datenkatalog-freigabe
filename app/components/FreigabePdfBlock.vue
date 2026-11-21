@@ -12,6 +12,7 @@ const { t } = useI18n();
 const toast = useToast();
 
 const text = FREIGABE_PDF_TEXT;
+const consent = ref(text.consent);
 const page = useTemplateRef<HTMLElement>("page");
 const generating = ref(false);
 
@@ -59,6 +60,10 @@ async function downloadPdf() {
             <p class="text-sm text-muted">{{ t("pdf.hint") }}</p>
         </div>
 
+        <UFormField :label="t('pdf.consent')" :help="t('pdf.editHint')">
+            <UTextarea v-model="consent" autoresize :rows="4" class="w-full" />
+        </UFormField>
+
         <div class="overflow-x-auto rounded-md bg-elevated p-4">
             <div class="sheet mx-auto">
                 <div ref="page" class="freigabe-page">
@@ -94,11 +99,7 @@ async function downloadPdf() {
                             }}</a>
                         </li>
                     </ul>
-                    <p>
-                        {{ text.consentBeforePortal
-                        }}<a :href="text.portalUrl">{{ text.portalUrl }}</a
-                        >{{ text.consentAfterPortal }}
-                    </p>
+                    <p class="consent">{{ consent }}</p>
 
                     <p class="signature">{{ text.signature }}</p>
                 </div>
@@ -213,6 +214,10 @@ async function downloadPdf() {
 .assets .bullet {
     position: absolute;
     left: 2mm;
+}
+
+.freigabe-page .consent {
+    white-space: pre-wrap;
 }
 
 .freigabe-page .signature {

@@ -50,6 +50,8 @@
     "pdf": {
         "label": "Freigabe-PDF",
         "hint": "Formular zur Unterschrift durch den Data Steward. Die ausgewählten Datenprodukte sind mit dem Datenkatalog verlinkt.",
+        "consent": "Text nach der Auflistung",
+        "editHint": "Der Text kann bearbeitet werden und wird so ins PDF übernommen.",
         "download": "PDF herunterladen",
         "failed": "PDF konnte nicht erstellt werden."
     }
