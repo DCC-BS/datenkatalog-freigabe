@@ -7,24 +7,33 @@ import {
 export const REVIEW_REQUEST_SUBJECT =
     "Datenkatalog: Prüfung und Freigabe der Metadaten";
 
-export const REVIEW_REQUEST_BODY = `Guten Tag {givenName}
+export const REVIEW_REQUEST_BODY = `Hallo {givenName}
 
-Wir haben fast alle Metadaten fertig erfasst. Nun beginnen wir mit der Freigabe der bereits erfassten Metadaten. Hier ist das Resultat.
-
-Könntest du bitte die Beschreibungen sowie die Angaben zu den Personendaten, der Schutzbedarfsstufe und der Vertraulichkeit der Datenprodukte kurz prüfen?
-
+Wir haben alle Metadaten im kantonalen Datenkatalog fertig erfasst! Hier siehst du das Resultat:
 {assetList}
 
-Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vornehmen oder mir deine Änderungswünsche einfach mitteilen.
+Könntest du bitte die folgenden Punkte für die oben genannten Datenprodukte überprüfen?
+- Beschreibungen: Sind sie präzise und verständlich?
+- Personendaten: Sind die Angaben korrekt?
+- Schutzbedarfsstufe: Sind die Angaben korrekt?*
+- Vertraulichkeit: Sind die Angaben korrekt?*
 
-{dataOwnerLine}
+Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vornehmen oder mir deine Änderungswünsche per E-Mail oder in einem Teams-Call mitteilen.
+
+Wenn alles für dich korrekt ist, bitte ich dich freundlich, das Freigabe-Dokument bis zum {deadline} via e-Signatur (https://esignatur.egov.bs.ch/) zu unterzeichnen. Sobald du die Metadaten für den Datenkatalog freigibst, {dataOwnerLine}
+
+Bitte beachte den Hinweis zum kantonalen Datenportal im Freigabe-Dokument. Du kannst dich bei Bedarf entscheiden, ob bestimmte Metadaten nicht im Datenportal veröffentlicht werden sollen. Der Data Owner muss hierfür ohnehin auch die endgültige Genehmigung erteilen.
+
+Bei Fragen bin ich gerne für dich da.
 
 Vielen Dank nochmals für deine Zeit und Unterstützung!
 
-{weisungLine}
-
 Liebe Grüsse
-{senderGivenName}`;
+{senderGivenName}
+
+*{weisungLine}`;
+
+const REVIEW_DEADLINE_DAYS = 14;
 
 export interface EmailAsset {
     id: string;
@@ -60,9 +69,18 @@ export function buildReviewRequestEmail(
         body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName)
             .replace("{senderGivenName}", senderGivenName)
             .replace("{assetList}", assetList)
+            .replace("{deadline}", buildDeadline())
             .replace("{dataOwnerLine}", buildDataOwnerLine(dataOwners))
             .replace("{weisungLine}", weisungLine),
     };
+}
+
+function buildDeadline(): string {
+    const deadline = new Date();
+    deadline.setDate(deadline.getDate() + REVIEW_DEADLINE_DAYS);
+    const day = String(deadline.getDate()).padStart(2, "0");
+    const month = String(deadline.getMonth() + 1).padStart(2, "0");
+    return `${day}.${month}.${deadline.getFullYear()}`;
 }
 
 function buildDataOwnerLine(dataOwners: DataOwner[]): string {
@@ -73,9 +91,9 @@ function buildDataOwnerLine(dataOwners: DataOwner[]): string {
     );
     const recipients =
         names.length === 1
-            ? `dem Data Owner, ${names[0]},`
-            : `den Data Owners, ${names.slice(0, -1).join(", ")} und ${names.at(-1)},`;
-    return `Nach deiner Unterschrift würden wir die Mail ${recipients} zur Freigabe weiterleiten.`;
+            ? `den Data Owner, ${names[0]},`
+            : `die Data Owners, ${names.slice(0, -1).join(", ")} und ${names.at(-1)},`;
+    return `kontaktieren wir ${recipients} um die Metadaten im Datenkatalog kantonsintern sichtbar zu machen.`;
 }
 
 export function buildMailtoLink(
