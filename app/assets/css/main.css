@@ -1,3 +1,8 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "@dcc-bs/common-ui.bs.js";
+
+/* Hide file upload in feedback form (reaction, message, email only) */
+div:has(> label[for="feedback-attachments"]) {
+    display: none;
+}
