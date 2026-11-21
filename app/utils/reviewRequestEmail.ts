@@ -20,7 +20,7 @@ Könntest du bitte die folgenden Punkte für die oben genannten Datenprodukte ü
 
 Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vornehmen oder mir deine Änderungswünsche per E-Mail oder in einem Teams-Call mitteilen.
 
-Wenn alles für dich korrekt ist, bitte ich dich freundlich, das Freigabe-Dokument bis zum {deadline} via e-Signatur (https://esignatur.egov.bs.ch/) zu unterzeichnen. Sobald du die Metadaten für den Datenkatalog freigibst, {dataOwnerLine}
+Wenn alles für dich korrekt ist, bitte ich dich freundlich, das Freigabe-Dokument bis zum *{deadline}* via e-Signatur (https://esignatur.egov.bs.ch/) zu unterzeichnen. Sobald du die Metadaten für den Datenkatalog freigibst, {dataOwnerLine}
 
 Bitte beachte den Hinweis zum kantonalen Datenportal im Freigabe-Dokument. Du kannst dich bei Bedarf entscheiden, ob bestimmte Metadaten nicht im Datenportal veröffentlicht werden sollen. Der Data Owner muss hierfür ohnehin auch die endgültige Genehmigung erteilen.
 
