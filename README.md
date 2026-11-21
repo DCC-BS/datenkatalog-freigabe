@@ -37,8 +37,14 @@ All configuration is read from `.env` (see `.env.example`):
 | `DATASPOT_CLIENT_SECRET` | Client secret of the service app registration |
 | `DATASPOT_EXPOSED_CLIENT_ID` | Client ID of the Dataspot API exposed in Entra ID (scope `api://<id>/.default`) |
 | `DATASPOT_SERVICE_USER_ACCESS_KEY` | Access key of the Dataspot service user |
+| `NUXT_FEEDBACK_GITHUB_TOKEN` | GitHub token used by the feedback feature |
 
 The `DATASPOT_*` variables provide a service-to-service (M2M) token for Dataspot. They are **not** a login for app users.
+
+## Feedback
+
+The feedback button in the footer ([`feedback-control`](https://dcc-bs.github.io/documentation/nuxt-layers/feedback_control.html) layer) creates issues in [`DCC-BS/Feedback_Datenkatalog-Tools`](https://github.com/DCC-BS/Feedback_Datenkatalog-Tools) with the label `Freigabe`.
+`server/api/feedback.post.ts` overrides the layer's API route to use the title format `Freigabe - <first 5 words> ...`.
 
 ## Login and roles
 
@@ -105,13 +111,3 @@ The app is then available at <http://localhost:8033/>.
 - SQL queries: `server/utils/dataspotQueries.ts`
 - Dataspot base URL and database: `shared/dataspot.ts`
 - German UI texts: `i18n/locales/de.json`
-
-## Todos
-
-### Real Feedback button
-
-[`app/components/FeedbackButton.vue`](app/components/FeedbackButton.vue) currently only shows the toast "Noch nicht implementiert!".
-
-- Create the feedback GitHub repo `opendatabs/Feedback_datenkatalog-freigabe` (name was agreed during planning; confirm if the org should instead be `DCC-BS` like `Feedback_datenkatalog-dashboard`).
-- Extend the DCC-BS layer `github:DCC-BS/nuxt-layers/feedback-control` and replace the stub button with that layer's feedback control (same pattern as `datenkatalog-dashboard`).
-- Add the layer's runtime config (`repo`, `repoOwner`, `project`, `githubToken` / `FEEDBACK_GITHUB_TOKEN`, `label`) and document the token in `.env.example` without copying real secrets.

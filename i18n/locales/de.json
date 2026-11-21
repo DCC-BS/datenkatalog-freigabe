@@ -5,8 +5,7 @@
         "signOut": "Abmelden"
     },
     "feedback": {
-        "button": "Feedback",
-        "notImplemented": "Noch nicht implementiert!"
+        "button": "Feedback"
     },
     "errors": {
         "occurred": "Ein Fehler ist aufgetreten.",

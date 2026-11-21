@@ -5,7 +5,17 @@ export default defineNuxtConfig({
     extends: [
         ["github:DCC-BS/nuxt-layers/logger", { install: true }],
         ["github:DCC-BS/nuxt-layers/auth", { install: true }],
+        ["github:DCC-BS/nuxt-layers/feedback-control", { install: true }],
     ],
+    runtimeConfig: {
+        feedback: {
+            repo: "Feedback_Datenkatalog-Tools",
+            repoOwner: "DCC-BS",
+            project: "Freigabe",
+            githubToken: process.env.FEEDBACK_GITHUB_TOKEN || "",
+            label: "Freigabe",
+        },
+    },
     app: {
         baseURL: "/",
         head: {

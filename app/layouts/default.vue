@@ -39,7 +39,7 @@ const settingsItems = computed<DropdownMenuItem[]>(() => [
                 </template>
                 <template #right>
                     <div class="flex justify-end">
-                        <FeedbackButton />
+                        <FeedbackControl :inline="true" />
                     </div>
                 </template>
             </DataBsFooter>
