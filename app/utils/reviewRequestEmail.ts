@@ -13,10 +13,10 @@ Wir haben alle Metadaten im kantonalen Datenkatalog fertig erfasst! Hier siehst 
 {assetList}
 
 Könntest du bitte die folgenden Punkte für die oben genannten Datenprodukte überprüfen?
--\tBeschreibungen: Sind sie präzise und verständlich?
--\tPersonendaten: Sind die Angaben korrekt?
--\tSchutzbedarfsstufe: Sind die Angaben korrekt?*
--\tVertraulichkeit: Sind die Angaben korrekt?*
+ -  Beschreibungen: Sind sie präzise und verständlich?
+ -  Personendaten: Sind die Angaben korrekt?
+ -  Schutzbedarfsstufe: Sind die Angaben korrekt?*
+ -  Vertraulichkeit: Sind die Angaben korrekt?*
 
 Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vornehmen oder mir deine Änderungswünsche per E-Mail oder in einem Teams-Call mitteilen.
 
@@ -55,7 +55,7 @@ export function buildReviewRequestEmail(
 ): ReviewRequestEmail {
     const assetList = assets
         .map(
-            (asset) => `-\t${asset.label} (${catalogUrl(assetType, asset.id)})`,
+            (asset) => ` -  ${asset.label} (${catalogUrl(assetType, asset.id)})`,
         )
         .join("\n");
 
