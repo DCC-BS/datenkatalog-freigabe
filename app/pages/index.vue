@@ -103,11 +103,13 @@ const modeItems = computed(() => [
 
 const selectableItems = computed<SelectableAsset[]>(() => {
     if (mode.value === "datasets") {
-        return postDatasets.value.map((dataset) => ({
-            id: dataset.datasetId,
-            label: dataset.datasetLabel,
-            description: dataset.collectionLabel,
-        }));
+        return postDatasets.value
+            .map((dataset) => ({
+                id: dataset.datasetId,
+                label: dataset.datasetLabel,
+                description: dataset.collectionLabel,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
     }
 
     const collections = new Map<string, { label: string; count: number }>();
@@ -122,11 +124,13 @@ const selectableItems = computed<SelectableAsset[]>(() => {
             });
         }
     }
-    return [...collections].map(([id, collection]) => ({
-        id,
-        label: collection.label,
-        description: t("selection.datasetCount", { count: collection.count }),
-    }));
+    return [...collections]
+        .map(([id, collection]) => ({
+            id,
+            label: collection.label,
+            description: t("selection.datasetCount", { count: collection.count }),
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
 });
 
 const selectedIds = ref<string[]>([]);
