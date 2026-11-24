@@ -12,6 +12,7 @@ export interface Person {
     givenName: string;
     familyName: string;
     email: string;
+    gender: string;
 }
 
 export interface DataOwner {

@@ -7,7 +7,7 @@ import {
 export const REVIEW_REQUEST_SUBJECT =
     "Datenkatalog: Prüfung und Freigabe der Metadaten";
 
-export const REVIEW_REQUEST_BODY = `Hallo {givenName}
+export const REVIEW_REQUEST_BODY = `{greeting}
 
 Wir haben alle Metadaten im kantonalen Datenkatalog fertig erfasst! Hier siehst du das Resultat:
 {assetList}
@@ -47,6 +47,7 @@ export interface ReviewRequestEmail {
 
 export function buildReviewRequestEmail(
     givenName: string,
+    gender: string,
     senderGivenName: string,
     assetType: CatalogAssetType,
     assets: EmailAsset[],
@@ -66,13 +67,22 @@ export function buildReviewRequestEmail(
 
     return {
         subject: REVIEW_REQUEST_SUBJECT,
-        body: REVIEW_REQUEST_BODY.replace("{givenName}", givenName)
+        body: REVIEW_REQUEST_BODY.replace(
+            "{greeting}",
+            buildGreeting(givenName, gender),
+        )
             .replace("{senderGivenName}", senderGivenName)
             .replace("{assetList}", assetList)
             .replace("{deadline}", buildDeadline())
             .replace("{dataOwnerLine}", buildDataOwnerLine(dataOwners))
             .replace("{weisungLine}", weisungLine),
     };
+}
+
+function buildGreeting(givenName: string, gender: string): string {
+    if (gender === "1") return `Lieber ${givenName}`;
+    if (gender === "2") return `Liebe ${givenName}`;
+    return `Liebe/r ${givenName}`;
 }
 
 function buildDeadline(): string {

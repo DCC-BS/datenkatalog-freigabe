@@ -173,6 +173,7 @@ watch(
         if (!selectedPerson.value) return;
         const email = buildReviewRequestEmail(
             selectedPerson.value.givenName,
+            selectedPerson.value.gender,
             senderGivenName.value,
             mode.value,
             selectedAssets.value,

@@ -9,6 +9,7 @@ export default defineEventHandler(async (event): Promise<Person[]> => {
         givenName: String(row.given_name),
         familyName: String(row.family_name),
         email: String(row.email),
+        gender: row.gender == null ? "" : String(row.gender),
     }));
     const persons = isDcc(session)
         ? allPersons

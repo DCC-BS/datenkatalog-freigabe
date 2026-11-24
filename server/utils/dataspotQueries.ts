@@ -5,7 +5,7 @@ export const DATA_STEWARD_ROLE_LABEL = "Data Steward";
 export const DATA_OWNER_ROLE_LABEL = "Data Owner";
 
 export const PERSONS_QUERY = `
-SELECT DISTINCT pe.id, pe.given_name, pe.family_name, u.login_id AS email
+SELECT DISTINCT pe.id, pe.given_name, pe.family_name, pe.gender, u.login_id AS email
 FROM holdspost_view hp
 JOIN post_view p ON p.id = hp.holds_post
 JOIN role_view r ON r.id = p.has_role
