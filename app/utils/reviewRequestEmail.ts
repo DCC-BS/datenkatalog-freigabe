@@ -57,7 +57,7 @@ export function buildReviewRequestEmail(
         .map(
             (asset) => ` -  ${asset.label} (${catalogUrl(assetType, asset.id)})`,
         )
-        .join("\n");
+        .join("\r\n");
 
     const trimmedWeisungUrl = weisungUrl.trim();
     const weisungLine = trimmedWeisungUrl
