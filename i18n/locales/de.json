@@ -5,7 +5,8 @@
         "signOut": "Abmelden"
     },
     "feedback": {
-        "button": "Feedback"
+        "button": "Feedback",
+        "message_label_named": "Sag uns deine Meinung, {name}"
     },
     "errors": {
         "occurred": "Ein Fehler ist aufgetreten.",

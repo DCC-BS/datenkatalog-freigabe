@@ -22,6 +22,20 @@ const attachments = ref<File[]>([]);
 
 const sessionEmail = computed(() => (authData.value?.user.email ?? "").trim());
 
+const sessionGivenName = computed(() => {
+    const name = (authData.value?.user.name ?? "").trim();
+    const separatorIndex = name.indexOf(",");
+    if (separatorIndex === -1) return name;
+    return name.slice(separatorIndex + 1).trim();
+});
+
+const messageLabel = computed(() => {
+    if (sessionEmail.value && sessionGivenName.value) {
+        return t("feedback.message_label_named", { name: sessionGivenName.value });
+    }
+    return t("feedback.message_label");
+});
+
 // Constants for attachment validation
 const MAX_FILES = 2;
 const MAX_FILE_SIZE_MB = 75;
@@ -246,7 +260,7 @@ function blobToBase64(blob: Blob): Promise<string> {
                             <label
                                 for="feedback-text"
                                 class="text-sm font-medium text-gray-500 dark:text-gray-400"
-                                >{{ t("feedback.message_label") }}</label
+                                >{{ messageLabel }}</label
                             >
                             <UTextarea
                                 id="feedback-text"
