@@ -26,6 +26,10 @@ function openMailProgram() {
 
 <template>
     <div class="flex flex-col gap-4">
+        <div>
+            <h2 class="text-lg font-semibold">{{ t("email.label") }}</h2>
+        </div>
+
         <UFormField :label="t('email.recipient')">
             <UInput :model-value="props.recipient" readonly class="w-full" />
         </UFormField>
