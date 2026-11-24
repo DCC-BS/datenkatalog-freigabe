@@ -13,10 +13,12 @@ interface FeedbackResponse {
 }
 
 export default defineEventHandler(async (event) => {
+    const session = await requireUserSession(event);
     const body = await readBody<FeedbackBody>(event);
 
     const message = body?.message?.trim() || "";
-    const email = body?.email?.trim() || "";
+    const email = session.email?.trim() || "";
+    const name = session.name?.trim() || "";
     const rating = body?.rating || "not-selected";
 
     if (!message) {
@@ -53,6 +55,7 @@ export default defineEventHandler(async (event) => {
         `Created: ${createdAt}`,
         "",
         `**Rating:** ${rating}`,
+        `**Name:** ${name || "n/a"}`,
         `**Email:** ${email || "n/a"}`,
         "",
         "**Message**",
