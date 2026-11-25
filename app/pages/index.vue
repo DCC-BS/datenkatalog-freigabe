@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { StepperItem } from "@nuxt/ui";
 import type { DataOwner, Dataset, Person } from "#shared/dataspot";
 import type { SelectableAsset } from "~/types/selectableAsset";
 
 type SelectionMode = "datasets" | "collections";
+type StepValue = "eingrenzen" | "auswahl" | "email" | "pdf";
 
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();
@@ -185,87 +187,198 @@ watch(
     },
     { immediate: true },
 );
+
+const stepOrder: StepValue[] = ["eingrenzen", "auswahl", "email", "pdf"];
+
+const step1Valid = computed(
+    () =>
+        !!selectedPerson.value &&
+        !datasetsLoading.value &&
+        datasets.value.length > 0 &&
+        !!selectedPostItem.value,
+);
+
+const step2Valid = computed(() => selectedAssets.value.length > 0);
+
+const activeStep = ref<StepValue>("eingrenzen");
+
+const stepItems = computed<StepperItem[]>(() => [
+    {
+        value: "eingrenzen",
+        title: t("steps.eingrenzen.title"),
+        icon: "i-lucide-user",
+    },
+    {
+        value: "auswahl",
+        title: t("steps.auswahl.title"),
+        icon: "i-lucide-list-checks",
+        disabled: !step1Valid.value,
+    },
+    {
+        value: "email",
+        title: t("steps.email.title"),
+        icon: "i-lucide-mail",
+        disabled: !step1Valid.value || !step2Valid.value,
+    },
+    {
+        value: "pdf",
+        title: t("steps.pdf.title"),
+        icon: "i-lucide-file-text",
+        disabled: !step1Valid.value || !step2Valid.value,
+    },
+]);
+
+const activeStepIndex = computed(() => stepOrder.indexOf(activeStep.value));
+
+const canGoNext = computed(() => {
+    if (activeStep.value === "eingrenzen") return step1Valid.value;
+    if (activeStep.value === "auswahl") return step2Valid.value;
+    return activeStepIndex.value < stepOrder.length - 1;
+});
+
+const hasPrev = computed(() => activeStepIndex.value > 0);
+const hasNext = computed(() => activeStepIndex.value < stepOrder.length - 1);
+
+function goPrev() {
+    const previous = stepOrder[activeStepIndex.value - 1];
+    if (previous) activeStep.value = previous;
+}
+
+function goNext() {
+    if (!canGoNext.value) return;
+    const next = stepOrder[activeStepIndex.value + 1];
+    if (next) activeStep.value = next;
+}
+
+watch([step1Valid, step2Valid], () => {
+    if (!step1Valid.value && activeStep.value !== "eingrenzen") {
+        activeStep.value = "eingrenzen";
+        return;
+    }
+    if (
+        step1Valid.value &&
+        !step2Valid.value &&
+        (activeStep.value === "email" || activeStep.value === "pdf")
+    ) {
+        activeStep.value = "auswahl";
+    }
+});
 </script>
 
 <template>
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-4">
         <div>
-            <h1 class="text-2xl font-bold">{{ t("page.title") }}</h1>
-            <p class="text-muted">{{ t("page.intro") }}</p>
+            <h1 class="text-xl font-bold">{{ t("page.title") }}</h1>
+            <p v-if="activeStep === 'eingrenzen'" class="mt-1 text-sm text-muted">
+                {{ t("page.intro") }}
+            </p>
         </div>
 
-        <UFormField :label="t('steward.label')">
-            <ClientOnly>
-                <USelectMenu
-                    v-model="selectedPersonItem"
-                    :items="personItems"
-                    :loading="personsPending"
-                    :disabled="personsPending"
-                    :placeholder="
-                        personsPending
-                            ? t('steward.loading')
-                            : t('steward.placeholder')
-                    "
-                    :search-input="{ placeholder: t('steward.searchPlaceholder') }"
-                    class="w-full"
+        <UStepper
+            v-model="activeStep"
+            :items="stepItems"
+            size="sm"
+            class="w-full"
+        />
+
+        <div v-show="activeStep === 'eingrenzen'" class="flex flex-col gap-4">
+            <UFormField :label="t('steward.label')">
+                <ClientOnly>
+                    <USelectMenu
+                        v-model="selectedPersonItem"
+                        :items="personItems"
+                        :loading="personsPending"
+                        :disabled="personsPending"
+                        :placeholder="
+                            personsPending
+                                ? t('steward.loading')
+                                : t('steward.placeholder')
+                        "
+                        :search-input="{
+                            placeholder: t('steward.searchPlaceholder'),
+                        }"
+                        class="w-full"
+                    />
+                </ClientOnly>
+            </UFormField>
+
+            <template v-if="selectedPerson">
+                <div
+                    v-if="datasetsLoading"
+                    class="flex items-center gap-2 text-muted"
+                >
+                    <UIcon name="i-lucide-loader-circle" class="animate-spin" />
+                    {{ t("steward.loadingDatasets") }}
+                </div>
+
+                <UAlert
+                    v-else-if="datasets.length === 0"
+                    color="neutral"
+                    variant="subtle"
+                    :title="t('steward.noDatasets')"
                 />
-            </ClientOnly>
-        </UFormField>
 
-        <template v-if="selectedPerson">
-            <div
-                v-if="datasetsLoading"
-                class="flex items-center gap-2 text-muted"
-            >
-                <UIcon name="i-lucide-loader-circle" class="animate-spin" />
-                {{ t("steward.loadingDatasets") }}
-            </div>
-
-            <UAlert
-                v-else-if="datasets.length === 0"
-                color="neutral"
-                variant="subtle"
-                :title="t('steward.noDatasets')"
-            />
-
-            <template v-else>
-                <UFormField :label="t('post.label')">
+                <UFormField v-else :label="t('post.label')">
                     <USelectMenu
                         v-model="selectedPostItem"
                         :items="postItems"
                         :placeholder="t('post.placeholder')"
-                        :search-input="{ placeholder: t('steward.searchPlaceholder') }"
+                        :search-input="{
+                            placeholder: t('steward.searchPlaceholder'),
+                        }"
                         class="w-full"
                     />
                 </UFormField>
-
-                <UFormField :label="t('selection.label')">
-                    <URadioGroup
-                        v-model="mode"
-                        :items="modeItems"
-                        orientation="horizontal"
-                        class="mb-3"
-                    />
-                    <AssetSelection v-model="selectedIds" :items="selectableItems" />
-                </UFormField>
-
-                <USeparator />
-
-                <EmailPreview
-                    v-model:subject="subject"
-                    v-model:body="body"
-                    :recipient="selectedPerson.email"
-                    :disabled="selectedAssets.length === 0"
-                />
-
-                <USeparator />
-
-                <FreigabePdfBlock
-                    :family-name="selectedPerson.familyName"
-                    :asset-type="mode"
-                    :assets="selectedAssets"
-                />
             </template>
-        </template>
+        </div>
+
+        <div v-show="activeStep === 'auswahl'" class="flex flex-col gap-4">
+            <UFormField :label="t('selection.label')">
+                <URadioGroup
+                    v-model="mode"
+                    :items="modeItems"
+                    orientation="horizontal"
+                    class="mb-3"
+                />
+                <AssetSelection v-model="selectedIds" :items="selectableItems" />
+            </UFormField>
+        </div>
+
+        <div v-show="activeStep === 'email'" class="flex flex-col gap-4">
+            <EmailPreview
+                v-if="selectedPerson"
+                v-model:subject="subject"
+                v-model:body="body"
+                :recipient="selectedPerson.email"
+                :disabled="selectedAssets.length === 0"
+            />
+        </div>
+
+        <!-- Keep FreigabePdfBlock mounted via v-show so html2pdf keeps a live preview node. -->
+        <div v-show="activeStep === 'pdf'" class="flex flex-col gap-4">
+            <FreigabePdfBlock
+                v-if="selectedPerson"
+                :family-name="selectedPerson.familyName"
+                :asset-type="mode"
+                :assets="selectedAssets"
+            />
+        </div>
+
+        <div class="flex justify-between gap-2">
+            <UButton
+                leading-icon="i-lucide-arrow-left"
+                variant="outline"
+                :label="t('steps.prev')"
+                :disabled="!hasPrev"
+                @click="goPrev"
+            />
+            <UButton
+                v-if="hasNext"
+                trailing-icon="i-lucide-arrow-right"
+                :label="t('steps.next')"
+                :disabled="!canGoNext"
+                @click="goNext"
+            />
+        </div>
     </div>
 </template>

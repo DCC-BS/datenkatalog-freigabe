@@ -64,10 +64,7 @@ async function downloadPdf() {
 
 <template>
     <div class="flex flex-col gap-4">
-        <div>
-            <h2 class="text-lg font-semibold">{{ t("pdf.label") }}</h2>
-            <p class="text-sm text-muted">{{ t("pdf.hint") }}</p>
-        </div>
+        <p class="text-sm text-muted">{{ t("pdf.hint") }}</p>
 
         <UFormField :label="t('pdf.consent')" :help="t('pdf.editHint')">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
