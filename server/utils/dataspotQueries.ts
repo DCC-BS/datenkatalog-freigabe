@@ -30,7 +30,7 @@ WHERE u.is_person = '{person_id}'
 
 export const DATASETS_QUERY = `
 WITH person_agent AS (
-    SELECT hp.holds_post AS agent_id, p.label AS post_label
+    SELECT hp.holds_post AS agent_id
     FROM holdspost_view hp
     JOIN post_view p ON p.id = hp.holds_post
     JOIN role_view r ON r.id = p.has_role
@@ -38,8 +38,6 @@ WITH person_agent AS (
       AND r.label = '${DATA_STEWARD_ROLE_LABEL}'
 )
 SELECT DISTINCT
-    pa.agent_id AS post_id,
-    pa.post_label,
     d.id AS dataset_id,
     d.label AS dataset_label,
     c.id AS collection_id,
@@ -51,7 +49,6 @@ JOIN collection_view c ON c.id = d.in_collection
 JOIN role_view ar ON ar.id = a.attributed_as
 WHERE d.public_state = 'DRAFT'
   AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
-ORDER BY pa.post_label, c.label, d.label
 `;
 
 export const DATA_OWNERS_QUERY = `

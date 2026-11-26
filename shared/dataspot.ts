@@ -21,8 +21,6 @@ export interface DataOwner {
 }
 
 export interface Dataset {
-    postId: string;
-    postLabel: string;
     datasetId: string;
     datasetLabel: string;
     collectionId: string;

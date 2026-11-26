@@ -73,28 +73,6 @@ watch(selectedPerson, async (person) => {
     }
 });
 
-const postItems = computed(() => {
-    const posts = new Map<string, string>();
-    for (const dataset of datasets.value) {
-        posts.set(dataset.postId, dataset.postLabel);
-    }
-    return [...posts]
-        .map(([id, label]) => ({ label, id }))
-        .sort((a, b) => a.label.localeCompare(b.label));
-});
-
-const selectedPostItem = ref<(typeof postItems.value)[number]>();
-
-watch(postItems, (items) => {
-    selectedPostItem.value = items[0];
-});
-
-const postDatasets = computed(() =>
-    datasets.value.filter(
-        (dataset) => dataset.postId === selectedPostItem.value?.id,
-    ),
-);
-
 const mode = ref<SelectionMode>("datasets");
 const modeItems = computed(() => [
     { label: t("selection.datasets"), value: "datasets" },
@@ -103,7 +81,7 @@ const modeItems = computed(() => [
 
 const selectableItems = computed<SelectableAsset[]>(() => {
     if (mode.value === "datasets") {
-        return postDatasets.value
+        return datasets.value
             .map((dataset) => ({
                 id: dataset.datasetId,
                 label: dataset.datasetLabel,
@@ -113,7 +91,7 @@ const selectableItems = computed<SelectableAsset[]>(() => {
     }
 
     const collections = new Map<string, { label: string; count: number }>();
-    for (const dataset of postDatasets.value) {
+    for (const dataset of datasets.value) {
         const collection = collections.get(dataset.collectionId);
         if (collection) {
             collection.count += 1;
@@ -144,7 +122,7 @@ const selectedAssets = computed(() =>
 );
 
 const selectedDataOwners = computed<DataOwner[]>(() => {
-    const selectedDatasets = postDatasets.value.filter((dataset) =>
+    const selectedDatasets = datasets.value.filter((dataset) =>
         selectedIds.value.includes(
             mode.value === "datasets"
                 ? dataset.datasetId
@@ -229,16 +207,6 @@ watch(
             />
 
             <template v-else>
-                <UFormField :label="t('post.label')">
-                    <USelectMenu
-                        v-model="selectedPostItem"
-                        :items="postItems"
-                        :placeholder="t('post.placeholder')"
-                        :search-input="{ placeholder: t('steward.searchPlaceholder') }"
-                        class="w-full"
-                    />
-                </UFormField>
-
                 <UFormField :label="t('selection.label')">
                     <URadioGroup
                         v-model="mode"

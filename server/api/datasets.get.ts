@@ -48,8 +48,6 @@ export default defineEventHandler(async (event): Promise<Dataset[]> => {
     }
 
     const datasets = rows.map((row) => ({
-        postId: String(row.post_id),
-        postLabel: String(row.post_label),
         datasetId: String(row.dataset_id),
         datasetLabel: String(row.dataset_label),
         collectionId: String(row.collection_id),

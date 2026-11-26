@@ -14,11 +14,7 @@
     },
     "page": {
         "title": "Metadaten zur Prüfung versenden",
-        "intro": "Wähle einen Data Steward, den Posten und die noch nicht veröffentlichten Datensätze, für die eine Prüfung angefragt werden soll."
-    },
-    "post": {
-        "label": "Posten",
-        "placeholder": "Posten auswählen"
+        "intro": "Wähle einen Data Steward und die noch nicht veröffentlichten Datensätze, für die eine Prüfung angefragt werden soll."
     },
     "steward": {
         "label": "Data Steward",
