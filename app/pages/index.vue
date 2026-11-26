@@ -112,13 +112,27 @@ const selectableItems = computed<SelectableAsset[]>(() => {
 });
 
 const selectedIds = ref<string[]>([]);
+const excludedFromPortalIds = ref<string[]>([]);
 
 watch(selectableItems, (items) => {
     selectedIds.value = items.map((item) => item.id);
 });
 
+watch(selectedIds, (ids) => {
+    const selected = new Set(ids);
+    excludedFromPortalIds.value = excludedFromPortalIds.value.filter((id) =>
+        selected.has(id),
+    );
+});
+
 const selectedAssets = computed(() =>
     selectableItems.value.filter((item) => selectedIds.value.includes(item.id)),
+);
+
+const excludedFromPortalAssets = computed(() =>
+    selectedAssets.value.filter((item) =>
+        excludedFromPortalIds.value.includes(item.id),
+    ),
 );
 
 const selectedDataOwners = computed<DataOwner[]>(() => {
@@ -146,7 +160,14 @@ const subject = ref("");
 const body = ref("");
 
 watch(
-    [selectedPerson, mode, selectedAssets, selectedDataOwners, senderGivenName],
+    [
+        selectedPerson,
+        mode,
+        selectedAssets,
+        excludedFromPortalAssets,
+        selectedDataOwners,
+        senderGivenName,
+    ],
     () => {
         if (!selectedPerson.value) return;
         const email = buildReviewRequestEmail(
@@ -155,6 +176,7 @@ watch(
             senderGivenName.value,
             mode.value,
             selectedAssets.value,
+            excludedFromPortalAssets.value,
             runtimeConfig.public.weisungSchutzmassnahmenUrl,
             selectedDataOwners.value,
         );
@@ -215,6 +237,12 @@ watch(
                         class="mb-3"
                     />
                     <AssetSelection v-model="selectedIds" :items="selectableItems" />
+                    <PortalExclusion
+                        v-if="selectedAssets.length > 0"
+                        v-model="excludedFromPortalIds"
+                        :items="selectedAssets"
+                        class="mt-3"
+                    />
                 </UFormField>
 
                 <USeparator />
@@ -232,6 +260,7 @@ watch(
                     :family-name="selectedPerson.familyName"
                     :asset-type="mode"
                     :assets="selectedAssets"
+                    :excluded-assets="excludedFromPortalAssets"
                 />
             </template>
         </template>

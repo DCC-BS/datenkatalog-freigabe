@@ -6,6 +6,7 @@ const props = defineProps<{
     familyName: string;
     assetType: CatalogAssetType;
     assets: EmailAsset[];
+    excludedAssets: EmailAsset[];
 }>();
 
 const { t } = useI18n();
@@ -15,6 +16,20 @@ const text = FREIGABE_PDF_TEXT;
 const consent = ref(text.consent);
 const page = useTemplateRef<HTMLElement>("page");
 const generating = ref(false);
+
+const exclusionCategory = computed(() =>
+    portalExclusionCategory(props.assets.length, props.excludedAssets.length),
+);
+
+const isPartialExclusion = computed(
+    () => exclusionCategory.value === "partial",
+);
+
+const isAllExcluded = computed(() => exclusionCategory.value === "all");
+
+watch(isAllExcluded, (all) => {
+    consent.value = all ? text.consentAll : text.consent;
+});
 
 async function downloadPdf() {
     if (!page.value) return;
@@ -60,10 +75,6 @@ async function downloadPdf() {
             <p class="text-sm text-muted">{{ t("pdf.hint") }}</p>
         </div>
 
-        <UFormField :label="t('pdf.consent')" :help="t('pdf.editHint')">
-            <UTextarea v-model="consent" autoresize :rows="4" class="w-full" />
-        </UFormField>
-
         <div class="overflow-x-auto rounded-md bg-elevated p-4">
             <div class="sheet mx-auto">
                 <div ref="page" class="freigabe-page">
@@ -100,11 +111,32 @@ async function downloadPdf() {
                         </li>
                     </ul>
                     <p class="consent">{{ consent }}</p>
+                    <template v-if="isPartialExclusion">
+                        <p>{{ text.exceptionsIntro }}</p>
+                        <ul class="assets">
+                            <li
+                                v-for="asset in props.excludedAssets"
+                                :key="asset.id"
+                            >
+                                <span class="bullet">•</span>
+                                <a
+                                    :href="
+                                        catalogUrl(props.assetType, asset.id)
+                                    "
+                                    >{{ asset.label }}</a
+                                >
+                            </li>
+                        </ul>
+                    </template>
 
                     <p class="signature">{{ text.signature }}</p>
                 </div>
             </div>
         </div>
+
+        <UFormField :label="t('pdf.consent')" :help="t('pdf.editHint')">
+            <UTextarea v-model="consent" autoresize :rows="4" class="w-full" />
+        </UFormField>
 
         <div>
             <UButton

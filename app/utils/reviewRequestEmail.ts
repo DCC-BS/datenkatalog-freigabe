@@ -3,6 +3,7 @@ import {
     catalogUrl,
     type DataOwner,
 } from "#shared/dataspot";
+import { portalExclusionCategory } from "~/utils/freigabePdf";
 
 export const REVIEW_REQUEST_SUBJECT =
     "Datenkatalog: Prüfung und Freigabe der Metadaten";
@@ -22,7 +23,7 @@ Anpassungen kannst du entweder direkt über das Stift-Symbol im Datenkatalog vor
 
 Wenn alles für dich korrekt ist, bitte ich dich freundlich, das Freigabe-Dokument bis zum *{deadline}* via e-Signatur (https://esignatur.egov.bs.ch/) zu unterzeichnen. Sobald du die Metadaten für den Datenkatalog freigibst, {dataOwnerLine}
 
-Bitte beachte den Hinweis zum kantonalen Datenportal im Freigabe-Dokument. Du kannst dich bei Bedarf entscheiden, ob bestimmte Metadaten nicht im Datenportal veröffentlicht werden sollen. Der Data Owner muss hierfür ohnehin auch die endgültige Genehmigung erteilen.
+Falls einzelne Metadaten nicht im kantonalen Datenportal veröffentlicht werden sollen, lass es mich bitte wissen. Der Data Owner muss hierfür ohnehin auch die endgültige Genehmigung erteilen.{portalScopeBlock}
 
 Bei Fragen bin ich gerne für dich da.
 
@@ -34,6 +35,12 @@ Liebe Grüsse
 *{weisungLine}`;
 
 const REVIEW_DEADLINE_DAYS = 14;
+
+const PORTAL_EXCEPTIONS_INTRO =
+    "Von der Veröffentlichung im kantonalen Datenportal sind aktuell folgende Datenprodukte ausgenommen:";
+
+const PORTAL_ALL_EXCLUDED_LINE =
+    "Die oben genannten Datenprodukte sind zur Veröffentlichung im Datenkatalog vorgesehen, nicht im Datenportal.";
 
 export interface EmailAsset {
     id: string;
@@ -51,6 +58,7 @@ export function buildReviewRequestEmail(
     senderGivenName: string,
     assetType: CatalogAssetType,
     assets: EmailAsset[],
+    excludedAssets: EmailAsset[],
     weisungUrl: string,
     dataOwners: DataOwner[],
 ): ReviewRequestEmail {
@@ -73,10 +81,34 @@ export function buildReviewRequestEmail(
         )
             .replace("{senderGivenName}", senderGivenName)
             .replace("{assetList}", assetList)
+            .replace(
+                "{portalScopeBlock}",
+                buildPortalScopeBlock(assetType, assets, excludedAssets),
+            )
             .replace("{deadline}", buildDeadline())
             .replace("{dataOwnerLine}", buildDataOwnerLine(dataOwners))
             .replace("{weisungLine}", weisungLine),
     };
+}
+
+function buildPortalScopeBlock(
+    assetType: CatalogAssetType,
+    assets: EmailAsset[],
+    excludedAssets: EmailAsset[],
+): string {
+    const category = portalExclusionCategory(
+        assets.length,
+        excludedAssets.length,
+    );
+    if (category === "none") return "";
+    if (category === "all") return `\n\n${PORTAL_ALL_EXCLUDED_LINE}`;
+
+    const list = excludedAssets
+        .map(
+            (asset) => ` -  ${asset.label} (${catalogUrl(assetType, asset.id)})`,
+        )
+        .join("\n");
+    return `\n\n${PORTAL_EXCEPTIONS_INTRO}\n${list}`;
 }
 
 function buildGreeting(givenName: string, gender: string): string {
