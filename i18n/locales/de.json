@@ -14,23 +14,7 @@
     },
     "page": {
         "title": "Metadaten zur Prüfung versenden",
-        "intro": "In vier Schritten: Data Steward und Posten wählen, Datensätze oder Sammlungen auswählen, die Prüfanfrage-E-Mail erstellen und das Freigabe-PDF herunterladen."
-    },
-    "steps": {
-        "next": "Weiter",
-        "prev": "Zurück",
-        "eingrenzen": {
-            "title": "Eingrenzen"
-        },
-        "auswahl": {
-            "title": "Auswahl"
-        },
-        "email": {
-            "title": "E-Mail"
-        },
-        "pdf": {
-            "title": "PDF"
-        }
+        "intro": "Wähle einen Data Steward, den Posten und die noch nicht veröffentlichten Datensätze, für die eine Prüfung angefragt werden soll."
     },
     "post": {
         "label": "Posten",
@@ -50,9 +34,7 @@
         "collections": "Sammlungen",
         "selectAll": "Alle auswählen",
         "selectNone": "Keine auswählen",
-        "datasetCount": "{count} Datensätze",
-        "searchPlaceholder": "Suchen...",
-        "selectedCount": "{selected} / {total} ausgewählt"
+        "datasetCount": "{count} Datensätze"
     },
     "email": {
         "label": "E-Mail",
