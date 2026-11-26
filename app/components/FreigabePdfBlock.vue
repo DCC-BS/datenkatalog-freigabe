@@ -11,17 +11,8 @@ const props = defineProps<{
 const { t } = useI18n();
 const toast = useToast();
 
-type ConsentOption = "portal" | "noPortal";
-
 const text = FREIGABE_PDF_TEXT;
-const selectedConsent = ref<ConsentOption>("portal");
-const consentPortal = ref(text.consent);
-const consentNoPortal = ref(text.consentNoPortal);
-const selectedConsentText = computed(() =>
-    selectedConsent.value === "portal"
-        ? consentPortal.value
-        : consentNoPortal.value,
-);
+const consent = ref(text.consent);
 const page = useTemplateRef<HTMLElement>("page");
 const generating = ref(false);
 
@@ -70,40 +61,7 @@ async function downloadPdf() {
         </div>
 
         <UFormField :label="t('pdf.consent')" :help="t('pdf.editHint')">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label class="flex items-start gap-3">
-                    <input
-                        v-model="selectedConsent"
-                        type="radio"
-                        name="freigabe-consent"
-                        value="portal"
-                        class="mt-2.5 size-4 shrink-0 accent-primary"
-                        :aria-label="t('pdf.consentPortal')"
-                    />
-                    <UTextarea
-                        v-model="consentPortal"
-                        autoresize
-                        :rows="4"
-                        class="w-full"
-                    />
-                </label>
-                <label class="flex items-start gap-3">
-                    <input
-                        v-model="selectedConsent"
-                        type="radio"
-                        name="freigabe-consent"
-                        value="noPortal"
-                        class="mt-2.5 size-4 shrink-0 accent-primary"
-                        :aria-label="t('pdf.consentNoPortal')"
-                    />
-                    <UTextarea
-                        v-model="consentNoPortal"
-                        autoresize
-                        :rows="4"
-                        class="w-full"
-                    />
-                </label>
-            </div>
+            <UTextarea v-model="consent" autoresize :rows="4" class="w-full" />
         </UFormField>
 
         <div class="overflow-x-auto rounded-md bg-elevated p-4">
@@ -141,7 +99,7 @@ async function downloadPdf() {
                             }}</a>
                         </li>
                     </ul>
-                    <p class="consent">{{ selectedConsentText }}</p>
+                    <p class="consent">{{ consent }}</p>
 
                     <p class="signature">{{ text.signature }}</p>
                 </div>
