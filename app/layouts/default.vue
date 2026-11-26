@@ -14,8 +14,8 @@ const settingsItems = computed<DropdownMenuItem[]>(() => [
 </script>
 
 <template>
-    <div class="flex flex-col min-h-dvh">
-        <div class="border-b border-default">
+    <div class="flex flex-col h-dvh overflow-hidden">
+        <div class="shrink-0 border-b border-default">
             <NavigationBar
                 :show-system-status="false"
                 :show-language-select="false"
@@ -29,10 +29,12 @@ const settingsItems = computed<DropdownMenuItem[]>(() => [
                 </template>
             </NavigationBar>
         </div>
-        <main class="flex-1 w-full max-w-5xl mx-auto px-4 py-6">
-            <slot />
-        </main>
-        <div class="border-t border-default py-2">
+        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+            <main class="w-full max-w-5xl mx-auto px-4 py-6">
+                <slot />
+            </main>
+        </div>
+        <div class="shrink-0 border-t border-default py-2 bg-default">
             <DataBsFooter size="sm">
                 <template #center>
                     <div />

@@ -2,6 +2,14 @@
 @import "@nuxt/ui";
 @import "@dcc-bs/common-ui.bs.js";
 
+/* Keep chrome fixed: only the layout main pane scrolls */
+html,
+body,
+#__nuxt {
+    height: 100%;
+    overflow: hidden;
+}
+
 /* Hide file upload in feedback form (reaction, message, email only) */
 div:has(> label[for="feedback-attachments"]) {
     display: none;
