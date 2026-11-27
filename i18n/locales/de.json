@@ -23,6 +23,7 @@
         "loading": "Data Stewards werden geladen...",
         "refining": "Liste wird noch gefiltert: vorübergehend können auch Data Stewards ohne unveröffentlichte Datensätze erscheinen.",
         "loadingDatasets": "Datensätze werden geladen...",
+        "loadingOwners": "Data Owner werden noch geladen…",
         "noDatasets": "Keine unveröffentlichten Datensätze"
     },
     "selection": {

@@ -34,10 +34,16 @@ function openMailProgram() {
             <UInput :model-value="props.recipient" readonly class="w-full" />
         </UFormField>
         <UFormField :label="t('email.subject')">
-            <UInput v-model="subject" class="w-full" />
+            <UInput v-model="subject" class="w-full" :disabled="props.disabled" />
         </UFormField>
         <UFormField :label="t('email.body')" :help="t('email.editHint')">
-            <UTextarea v-model="body" autoresize :rows="12" class="w-full" />
+            <UTextarea
+                v-model="body"
+                autoresize
+                :rows="12"
+                class="w-full"
+                :disabled="props.disabled"
+            />
         </UFormField>
         <div class="flex flex-wrap items-center gap-2">
             <UButton

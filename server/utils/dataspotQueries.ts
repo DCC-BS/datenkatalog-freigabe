@@ -68,28 +68,22 @@ WHERE d.public_state = 'DRAFT'
   AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
 `;
 
-export const DATA_OWNERS_QUERY = `
-WITH steward_dataset AS (
-    SELECT DISTINCT d.id AS dataset_id
-    FROM holdspost_view hp
-    JOIN post_view p ON p.id = hp.holds_post
-    JOIN role_view r ON r.id = p.has_role
-    JOIN attributedasset_view a ON a.attributed_to = p.id
-    JOIN dataset_view d ON d.id = a.id
-    JOIN role_view ar ON ar.id = a.attributed_as
-    WHERE hp.resource_id = '{person_id}'
-      AND r.label = '${DATA_STEWARD_ROLE_LABEL}'
-      AND ar.label = '${DATA_STEWARD_ROLE_LABEL}'
-      AND d.public_state = 'DRAFT'
-)
+/**
+ * Data owners for known dataset ids (no steward-draft CTE).
+ * `datasetIds` must already be UUID-validated; embedded as an IN list.
+ */
+export function dataOwnersByDatasetIdsQuery(datasetIds: string[]): string {
+    const list = datasetIds.map((id) => `'${id}'`).join(", ");
+    return `
 SELECT DISTINCT
-    sd.dataset_id,
+    a.id AS dataset_id,
     pe.given_name,
     pe.family_name
-FROM steward_dataset sd
-JOIN attributedasset_view a ON a.id = sd.dataset_id
+FROM attributedasset_view a
 JOIN role_view ar ON ar.id = a.attributed_as
 JOIN holdspost_view hp ON hp.holds_post = a.attributed_to
 JOIN person_view pe ON pe.id = hp.resource_id
 WHERE ar.label = '${DATA_OWNER_ROLE_LABEL}'
+  AND a.id IN (${list})
 `;
+}

@@ -83,16 +83,19 @@ const selectedPerson = computed(() => selectedPersonItem.value?.person);
 
 const datasets = ref<Dataset[]>([]);
 const datasetsLoading = ref(false);
+const ownersLoading = ref(false);
 let latestRequestId = 0;
 
 watch(selectedPerson, async (person) => {
     datasets.value = [];
+    ownersLoading.value = false;
     if (!person) return;
 
     const requestId = ++latestRequestId;
     datasetsLoading.value = true;
+    let result: Dataset[] = [];
     try {
-        const result = await $fetch<Dataset[]>("/api/datasets", {
+        result = await $fetch<Dataset[]>("/api/datasets", {
             query: { personId: person.id },
         });
         if (requestId === latestRequestId) datasets.value = result;
@@ -100,6 +103,30 @@ watch(selectedPerson, async (person) => {
         if (requestId === latestRequestId) showError(error);
     } finally {
         if (requestId === latestRequestId) datasetsLoading.value = false;
+    }
+
+    if (requestId !== latestRequestId || result.length === 0) return;
+
+    ownersLoading.value = true;
+    try {
+        const ownersByDataset = await $fetch<Record<string, DataOwner[]>>(
+            "/api/dataset-owners",
+            {
+                query: {
+                    personId: person.id,
+                    datasetIds: result.map((d) => d.datasetId).join(","),
+                },
+            },
+        );
+        if (requestId !== latestRequestId) return;
+        datasets.value = result.map((dataset) => ({
+            ...dataset,
+            dataOwners: ownersByDataset[dataset.datasetId] ?? [],
+        }));
+    } catch (error) {
+        if (requestId === latestRequestId) showError(error);
+    } finally {
+        if (requestId === latestRequestId) ownersLoading.value = false;
     }
 });
 
@@ -287,11 +314,22 @@ watch(
 
                 <USeparator />
 
+                <p
+                    v-if="ownersLoading"
+                    class="flex items-center gap-2 text-sm text-muted"
+                >
+                    <UIcon
+                        name="i-lucide-loader-circle"
+                        class="animate-spin"
+                    />
+                    {{ t("steward.loadingOwners") }}
+                </p>
+
                 <EmailPreview
                     v-model:subject="subject"
                     v-model:body="body"
                     :recipient="selectedPerson.email"
-                    :disabled="selectedAssets.length === 0"
+                    :disabled="selectedAssets.length === 0 || ownersLoading"
                 />
 
                 <USeparator />
