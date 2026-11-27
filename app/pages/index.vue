@@ -32,8 +32,38 @@ const {
     error: personsError,
 } = useLazyFetch<Person[]>("/api/persons", { server: false, default: () => [] });
 
+const personsRefining = ref(false);
+
 watch(personsError, (error) => {
     if (error) showError(error);
+});
+
+async function refinePersonsWithDrafts() {
+    if (personsRefining.value) return;
+    personsRefining.value = true;
+    try {
+        const refined = await $fetch<Person[]>("/api/persons", {
+            query: { withDrafts: "true" },
+        });
+        persons.value = refined;
+        const selectedId = selectedPersonItem.value?.person.id;
+        if (
+            selectedId &&
+            !refined.some((person) => person.id === selectedId)
+        ) {
+            selectedPersonItem.value = undefined;
+        }
+    } catch (error) {
+        showError(error);
+    } finally {
+        personsRefining.value = false;
+    }
+}
+
+watch(personsPending, (pending, wasPending) => {
+    if (wasPending && !pending && !personsError.value) {
+        void refinePersonsWithDrafts();
+    }
 });
 
 const personItems = computed(() =>
@@ -210,6 +240,16 @@ watch(
                     class="w-full"
                 />
             </ClientOnly>
+            <p
+                v-if="personsRefining"
+                class="mt-2 flex items-start gap-2 text-sm text-muted"
+            >
+                <UIcon
+                    name="i-lucide-loader-circle"
+                    class="mt-0.5 shrink-0 animate-spin"
+                />
+                <span>{{ t("steward.refining") }}</span>
+            </p>
         </UFormField>
 
         <template v-if="selectedPerson">

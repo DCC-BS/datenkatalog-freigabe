@@ -4,7 +4,24 @@
 export const DATA_STEWARD_ROLE_LABEL = "Data Steward";
 export const DATA_OWNER_ROLE_LABEL = "Data Owner";
 
+/** Fast steward list: Data Steward post + login. No DRAFT dataset gate. */
 export const PERSONS_QUERY = `
+SELECT DISTINCT pe.id, pe.given_name, pe.family_name, pe.gender, u.login_id AS email
+FROM holdspost_view hp
+JOIN post_view p ON p.id = hp.holds_post
+JOIN role_view r ON r.id = p.has_role
+JOIN person_view pe ON pe.id = hp.resource_id
+JOIN user_view u ON u.is_person = pe.id
+WHERE r.label = '${DATA_STEWARD_ROLE_LABEL}'
+  AND u.login_id IS NOT NULL
+ORDER BY pe.family_name, pe.given_name
+`;
+
+/**
+ * Stewards with at least one DRAFT dataset attributed to their steward post.
+ * Used to refine the fast list; slower (~8s) because of draft attributions.
+ */
+export const PERSONS_WITH_DRAFTS_QUERY = `
 SELECT DISTINCT pe.id, pe.given_name, pe.family_name, pe.gender, u.login_id AS email
 FROM holdspost_view hp
 JOIN post_view p ON p.id = hp.holds_post

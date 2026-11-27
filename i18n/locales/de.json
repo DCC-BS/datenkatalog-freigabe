@@ -21,6 +21,7 @@
         "placeholder": "Data Steward auswählen",
         "searchPlaceholder": "Suchen...",
         "loading": "Data Stewards werden geladen...",
+        "refining": "Liste wird noch gefiltert: vorübergehend können auch Data Stewards ohne unveröffentlichte Datensätze erscheinen.",
         "loadingDatasets": "Datensätze werden geladen...",
         "noDatasets": "Keine unveröffentlichten Datensätze"
     },
